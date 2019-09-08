@@ -6,6 +6,12 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+
+
+
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +33,9 @@ public class UsersController {
 	@Autowired
 	private UsersRepository usersRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@GetMapping("/users")
 	public List<Users> getAllUsers() {
 		return usersRepository.findAll();
@@ -42,6 +51,15 @@ public class UsersController {
 
 	@PostMapping("/users")
 	public Users createUsers(@Valid @RequestBody Users users) {
+
+
+		// test enskripsi password
+
+		String password=users.getPassword(); 		
+		String encryptPwd = passwordEncoder.encode(password);
+		users.setPassword(encryptPwd);
+		// SET ROLE 
+		users.setRole("customer");
 		return usersRepository.save(users);
 	}
 
