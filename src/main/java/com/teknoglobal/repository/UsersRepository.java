@@ -7,5 +7,6 @@ import com.teknoglobal.model.Users;
 
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long>{
-
+	
+	Users findByEmailAndPassword(String email, String password);
 }

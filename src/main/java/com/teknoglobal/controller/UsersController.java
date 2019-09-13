@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,12 +37,27 @@ public class UsersController {
 
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
-
+	
+	
+	@CrossOrigin
 	@GetMapping("/users")
 	public List<Users> getAllUsers() {
 		return usersRepository.findAll();
 	}
+	
+	//TEST
+	@CrossOrigin
+	@GetMapping("/login/{email}/{password}")
+	public ResponseEntity<Users> getUserByEmailAndPassword(@PathVariable(value = "email") String email, @PathVariable(value = "password") String password)
+			throws ResourceNotFoundException {
+		Users users = usersRepository.findByEmailAndPassword(email, password);
+		return ResponseEntity.ok().body(users);
+	}
 
+
+
+	
+	@CrossOrigin
 	@GetMapping("/users/{id}")
 	public ResponseEntity<Users> getUsersById(@PathVariable(value = "id") Long usersId)
 			throws ResourceNotFoundException {
@@ -49,7 +65,8 @@ public class UsersController {
 				.orElseThrow(() -> new ResourceNotFoundException("Users not found for this id :: " + usersId));
 		return ResponseEntity.ok().body(users);
 	}
-
+	
+	@CrossOrigin
 	@PostMapping("/users")
 	public Users createUsers(@Valid @RequestBody Users users) {
 
@@ -63,7 +80,8 @@ public class UsersController {
 		users.setRole("customer");
 		return usersRepository.save(users);
 	}
-
+	
+	@CrossOrigin
 	@PutMapping("/users/{id}")
 	public ResponseEntity<Users> updateUsers(@PathVariable(value = "id") Long usersId,
 			@Valid @RequestBody Users usersDetails) throws ResourceNotFoundException {
@@ -79,7 +97,8 @@ public class UsersController {
 		final Users updatedUsers = usersRepository.save(users);
 		return ResponseEntity.ok(updatedUsers);
 	}
-
+	
+	@CrossOrigin
 	@DeleteMapping("/users/{id}")
 	public Map<String, Boolean> deleteUsers(@PathVariable(value = "id") Long usersId)
 			throws ResourceNotFoundException {
